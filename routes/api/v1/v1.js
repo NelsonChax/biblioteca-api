@@ -6,19 +6,36 @@ const { verifyApiHeaderToken } =
 
 const {passport, jwtMiddleware} = require('./seguridad/jwtHelper');
 
-const pacientesRoutes = require('./pacientes/pacientes');
+const empleadosRoutes = require('./empleados/empleados');
+const librosRoutes = require('./libros/libros');
+const prestamosRoutes = require('./prestamos/prestamos');
 const seguridadRoutes = require('./seguridad/seguridad');
 // const expedientesRoutes = require('./expedientes/expedientes');
 router.use(passport.initialize());
 //public
 
 router.use('/seguridad', verifyApiHeaderToken, seguridadRoutes);
-//middlewares
+
+//************middlewares
+//Empleados
 router.use(
-  '/pacientes',
+  '/empleados',
   verifyApiHeaderToken,
-  //jwtMiddleware,
-  pacientesRoutes
+  empleadosRoutes
+);
+
+//Libros
+router.use(
+  '/libros',
+  verifyApiHeaderToken,
+  librosRoutes
+);
+
+//Prestamos
+router.use(
+  '/prestamos',
+  verifyApiHeaderToken,
+  prestamosRoutes
 );
 // router.use('/expedientes', expedientesRoutes);
 

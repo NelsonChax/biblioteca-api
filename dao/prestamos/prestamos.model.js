@@ -2,13 +2,13 @@ const ObjectId = require('mongodb').ObjectId;
 const getDb = require('../mongodb');
 
 let db = null;
-class Pacientes {
+class Prestamos {
   collection = null;
   constructor() {
     getDb()
       .then((database) => {
         db = database;
-        this.collection = db.collection('Pacientes');
+        this.collection = db.collection('Prestamos');
         if (process.env.MIGRATE === 'true') {
           // Por Si se ocupa algo
         }
@@ -16,15 +16,15 @@ class Pacientes {
       .catch((err) => { console.error(err) });
   }
 
-  async new(nombres, apellidos, identidad, telefono, correo) {
-    const newPaciente = {
-      nombres,
-      apellidos,
-      identidad,
-      telefono,
-      correo
+  async new(usuario, empleado, libro, fecha_prestamo, fecha_devuelto) {
+    const newPrestamo = {
+      usuario:new ObjectId(usuario),
+      empleado:new ObjectId(empleado),
+      libro:new ObjectId(libro),
+      fecha_prestamo,
+      fecha_devuelto
     };
-    const rslt = await this.collection.insertOne(newPaciente);
+    const rslt = await this.collection.insertOne(newPrestamo);
     return rslt;
   }
 
@@ -54,16 +54,15 @@ class Pacientes {
     const myDocument = await this.collection.findOne(filter);
     return myDocument;
   }
-  async updateOne(id, nombres, apellidos, identidad, telefono, correo) {
+  async updateOne(id, usuario, empleado, libro, fecha_prestamo, fecha_devuelto) {
     const filter = {_id: new ObjectId(id)};
-    // UPDATE PACIENTES SET campo=valor, campo=valor where id= id;
     const updateCmd = {
       '$set':{
-        nombres,
-        apellidos,
-        identidad,
-        telefono,
-        correo
+        usuario,
+        empleado,
+        libro,
+        fecha_prestamo,
+        fecha_devuelto
       }
     };
     return await this.collection.updateOne(filter, updateCmd);
@@ -111,8 +110,9 @@ class Pacientes {
     return await this.collection.updateOne(filter, updateCmd);
   }
   async deleteOne(id) {
-    
+    const filter = {_id: new ObjectId(id)};
+    return await this.collection.deleteOne(filter);
   }
 }
 
-module.exports = Pacientes;
+module.exports = Prestamos;
